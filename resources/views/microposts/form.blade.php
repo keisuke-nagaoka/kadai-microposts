@@ -1,6 +1,6 @@
 @if (Auth::id() == $user->id)
     <div class="mt-4">
-        <form metho="POST" action="{{ route('microposts.store') }}">
+        <form method="POST" action="{{ route('microposts.store') }}">
             @csrf
             
             <div class="form-control mt-4">
