@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class UserFollowController extends Controller
 {
     /**
+     * ユーザをフォローするアクション
      * 
      * @param $id 相手ユーザのid
      * @return \Illuminate\Http\Response
@@ -14,7 +15,7 @@ class UserFollowController extends Controller
      public function store($id)
      {
          // 認証済ユーザ（閲覧者）が、idのユーザをフォローする
-         \Auth::user()->follow(id);
+         \Auth::user()->follow($id);
          // 前のURLへリダイレクトさせる
          return back();
      }
@@ -28,7 +29,7 @@ class UserFollowController extends Controller
       public function destroy($id)
       {
           // 認証済ユーザ（閲覧者）が、idのユーザをアンフォローする
-          \Auth::user()->unfllow($id);
+          \Auth::user()->unfollow($id);
           // 前のURLへリダイレクトさせる
           return back();
       }

@@ -1,10 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;    // 追記
 
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\Auth;    // 追記
 use App\Models\User;    // 追記
 
 class UsersController extends Controller
