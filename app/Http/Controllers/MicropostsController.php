@@ -59,4 +59,16 @@ class MicropostsController extends Controller
         return back()
             ->with('Delete Failed');
     }
+    
+    public function favorite_users($id)
+    {
+        $micropost = Micropost::findOrFail($id);
+        $micropost->loadRelationshipCounts();
+        $favorites_users = $micropost->favorites_users()->paginate(10);
+        
+        return view('users.favorites',[
+            'micropost' => $micropost,
+            'microposts' => $favorites_users,
+        ]);
+    }
 }

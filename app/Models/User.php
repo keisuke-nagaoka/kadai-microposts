@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -55,7 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function loadRelationshipCounts()
     {
-        $this->loadCount(['microposts', 'followings', 'followers']);
+        $this->loadCount(['microposts', 'followings', 'followers', 'favorites']);
     }
 
     /**
@@ -131,5 +131,41 @@ class User extends Authenticatable implements MustVerifyEmail
           $userIds[] = $this->id;
           // それらのユーザが所有する投稿に絞り込む
           return Micropost::whereIn('user_id', $userIds);
+      }
+      
+      public function favorites()
+      {
+          return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id')->withTimestamps();
+      }
+      
+      public function favorite($userId)
+      {
+          $exist = $this->is_favorites($userId);
+          $its_me = $this->id == $userId;
+          
+          if ($exist || $its_me) {
+              return false;
+          } else {
+              $this->favorites()->attach($userId);
+              return true;
+          }
+      }
+      
+      public function unfavorite($userId)
+      {
+          $exist = $this->is_favorites($userId);
+          $its_me = $this->id == $userId;
+          
+          if ($exist && !$its_me) {
+              $this->favorites()->detach($userId);
+              return true;
+          } else {
+              return false;
+          }
+      }
+      
+      public function is_favorites($userId)
+      {
+          return $this->favorites()->where('micropost_id', $userId)->exists();
       }
 }
